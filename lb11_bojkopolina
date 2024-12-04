@@ -1,0 +1,56 @@
+#include <iostream>
+#include <regex>
+#include <string>
+using namespace std;
+class Car {
+private:
+    string brand;
+    string model;
+    string licensePlate;
+
+public:
+    Car(const string& brand, const string& model, const string& licensePlate) {
+        this->brand = brand; 
+        this->model = model; 
+        setLicensePlate(licensePlate); 
+    }
+    void setLicensePlate(const string& plate) {
+        regex pattern("^[A-Za-z0-9]{1,8}$");
+        if (regex_match(plate, pattern)) {
+            licensePlate = toUpperCase(plate);
+        }
+        else {
+            throw invalid_argument("Недійсний формат номерного знака. Має містити букви");
+        }
+    }
+    string getLicensePlate() const {
+        return licensePlate;
+    }
+    static string toUpperCase(const string& input) {
+        string result = input;
+        for (char& ch : result) {
+            ch = toupper(ch); 
+        }
+        return result; 
+    }
+    void displayInfo() const {
+        cout << "Інформація:" << endl;
+        cout << "Бренд: " << brand << endl;
+        cout << "Модель: " << model << endl;
+        cout << "Номерний знак: " << licensePlate << endl;
+    }
+};
+int main() {
+    try {
+        Car car("тойота", "корола", "ab030cd");
+        car.displayInfo(); 
+        car.setLicensePlate("00040");
+        cout << "Оновлення номерного знака: " << car.getLicensePlate() << endl;
+        
+        car.setLicensePlate("недійсний#123");
+    }
+    catch (const invalid_argument& e) {
+       
+        cerr << "Помилка: " << e.what() << endl;
+    }
+}
